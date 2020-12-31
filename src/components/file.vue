@@ -288,4 +288,4 @@ export default {
 </script>
 
 <style>
-</style>确定上传url，以及解决跨域问题
+</style>
