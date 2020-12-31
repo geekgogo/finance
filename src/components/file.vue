@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-upload
+		<!-- <el-upload
 			class="upload-demo"
 			ref="upload"
 			action=""
@@ -94,7 +94,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> -->
 
 		<el-upload ref="upload" drag action="" :auto-upload="false" multiple>
 			<i class="el-icon-upload"></i>
@@ -103,6 +103,9 @@
 			</div>
 		</el-upload>
 		<el-button type="primary" @click="submit">开始上传</el-button>
+		<el-button type="primary" @click="dialogVisible = true"
+			>下载报表</el-button
+		>
 
 		<el-dialog
 			title="上传进度"
@@ -116,6 +119,26 @@
 			<p style="text-align: center; margin: 10px 0">
 				已上传大小：{{ loaded }}，总大小： {{ total }}
 			</p>
+		</el-dialog>
+		<el-dialog
+			title="请选择报表范围"
+			:visible.sync="dialogVisible"
+			width="30%"
+			:before-close="handleClose"
+		>
+			<el-date-picker
+				v-model="dateValue"
+				type="month"
+				value-format="yyyy-MM"
+				placeholder="选择月"
+			>
+			</el-date-picker>
+			<span slot="footer" class="dialog-footer">
+				<el-button @click="dialogVisible = false">取 消</el-button>
+				<el-button type="primary" @click="startDownload"
+					>确 定</el-button
+				>
+			</span>
 		</el-dialog>
 	</div>
 </template>
@@ -140,26 +163,26 @@ export default {
 		};
 	},
 	methods: {
-		submitupload() {
-			this.$refs.upload.submit();
-		},
-		handleRemove(file, fileList) {
-			console.log(file, fileList);
-		},
-		handlePreview(file) {
-			console.log(file);
-		},
-		uploadError(file) {
-			console.log(file);
-			this.errorMsg = "上传失败";
-		},
-		uploadSuccess(file) {
-			console.log(file);
-			this.msg = "上传成功";
-		},
-		exceed() {
-			this.errorMsg = "超出文件上传个数";
-		},
+		// submitupload() {
+		// 	this.$refs.upload.submit();
+		// },
+		// handleRemove(file, fileList) {
+		// 	console.log(file, fileList);
+		// },
+		// handlePreview(file) {
+		// 	console.log(file);
+		// },
+		// uploadError(file) {
+		// 	console.log(file);
+		// 	this.errorMsg = "上传失败";
+		// },
+		// uploadSuccess(file) {
+		// 	console.log(file);
+		// 	this.msg = "上传成功";
+		// },
+		// exceed() {
+		// 	this.errorMsg = "超出文件上传个数";
+		// },
 		handleClose() {
 			console.log("yes");
 		},
@@ -168,64 +191,70 @@ export default {
 			console.log(this.dateValue);
 			//获取文件流下载
 		},
-		uploadFile(file) {
-			console.log(file);
-			console.log("开始上传");
-		},
-		//上传前的函数(用于验证上传文件格式及大小)
-		beforeUploadFile(file) {
-			const isLt10M = file.size / 1024 / 1024 < 10;
-			if (!isLt10M) {
-				return false;
-			}
-		},
-		//文件上传过程中的函数(在这里获取进度条的进度)
-		uploadFileProcess(event, file, fileList) {
-			this.fileArr = fileList;
-			this.fileArr.forEach((item) => {
-				console.log(item);
-				if (item.percentage == 100) {
-					console.log(item);
-				} else {
-					item.progressFlag = true;
-					item.progressPercent = Math.abs(item.percentage.toFixed(0));
-				}
-			});
-		},
-		//文件上传成功的函数(用于文件上传成功之后的逻辑)
-		handleFileSuccess(res, file, fileList) {
-			this.fileArr = fileList;
-			this.fileArr.forEach((item, index) => {
-				console.log(item, index);
-				item.progressFlag = false;
-				if (item.status == "success") {
-					item.successFlag = true;
-				} else {
-					item.successFlag = false;
-				}
-			});
-		},
-		//删除文件(基于文件列表的数据进行操作)
-		removeFile(item, index) {
-			console.log(item);
-			this.fileArr.splice(index, 1);
-		},
-		//下载文件(基于文件列表的数据进行操作)
-		downLoadFile(item, index) {
-			console.log(item, index);
-		},
+		// uploadFile(file) {
+		// 	console.log(file);
+		// 	console.log("开始上传");
+		// },
+		// //上传前的函数(用于验证上传文件格式及大小)
+		// beforeUploadFile(file) {
+		// 	// const isLt10M = file.size / 1024 / 1024 < 10;
+		// 	// if (!isLt10M) {
+		// 	// 	return false;
+		// 	// }
+		// 	console.log(file);
+		// 	// return true;
+		// },
+		// //文件上传过程中的函数(在这里获取进度条的进度)
+		// uploadFileProcess(event, file, fileList) {
+		// 	this.fileArr = fileList;
+		// 	this.fileArr.forEach((item) => {
+		// 		console.log(item);
+		// 		if (item.percentage == 100) {
+		// 			console.log(item);
+		// 		} else {
+		// 			item.progressFlag = true;
+		// 			item.progressPercent = Math.abs(item.percentage.toFixed(0));
+		// 		}
+		// 	});
+		// },
+		// //文件上传成功的函数(用于文件上传成功之后的逻辑)
+		// handleFileSuccess(res, file, fileList) {
+		// 	this.fileArr = fileList;
+		// 	this.fileArr.forEach((item, index) => {
+		// 		console.log(item, index);
+		// 		item.progressFlag = false;
+		// 		if (item.status == "success") {
+		// 			item.successFlag = true;
+		// 		} else {
+		// 			item.successFlag = false;
+		// 		}
+		// 	});
+		// },
+		// //删除文件(基于文件列表的数据进行操作)
+		// removeFile(item, index) {
+		// 	console.log(item);
+		// 	this.fileArr.splice(index, 1);
+		// },
+		// //下载文件(基于文件列表的数据进行操作)
+		// downLoadFile(item, index) {
+		// 	console.log(item, index);
+		// },
 
 		submit() {
 			const files = this.$refs.upload.uploadFiles;
+			console.log(files);
+			//检测文件名
+			//checkFileName(files)
 			if (files && files.length) {
 				const fd = new FormData();
 				files.forEach((item) => {
+					console.log("item:", item);
 					fd.append("files", item.raw, item.name);
 				});
 				this.dialog = true;
 				this.progress = this.loaded = this.total = 0;
 				this.$axios({
-					url: "你的接口地址",
+					url: "/api/upload",
 					method: "post",
 					onUploadProgress: (pe) => {
 						this.progress = Number.parseInt(
@@ -240,6 +269,7 @@ export default {
 					},
 				})
 					.then((res) => {
+						console.log(res);
 						this.$message.success("上传成功");
 						this.$refs.upload.clearFiles();
 						this.dialog = false;
@@ -258,4 +288,4 @@ export default {
 </script>
 
 <style>
-</style>
+</style>确定上传url，以及解决跨域问题
