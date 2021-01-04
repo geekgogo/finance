@@ -103,9 +103,7 @@
 			</div>
 		</el-upload>
 		<el-button type="primary" @click="submit">开始上传</el-button>
-		<el-button type="primary" @click="dialogVisible = true"
-			>下载报表</el-button
-		>
+		<el-button type="primary" @click="downLoadReport">下载报表</el-button>
 
 		<el-dialog
 			title="上传进度"
@@ -120,19 +118,39 @@
 				已上传大小：{{ loaded }}，总大小： {{ total }}
 			</p>
 		</el-dialog>
+
 		<el-dialog
 			title="请选择报表范围"
 			:visible.sync="dialogVisible"
 			width="30%"
 			:before-close="handleClose"
 		>
-			<el-date-picker
-				v-model="dateValue"
-				type="month"
-				value-format="yyyy-MM"
-				placeholder="选择月"
-			>
-			</el-date-picker>
+			<el-form ref="reportForm" :model="reportForm" label-width="80px">
+				<el-form-item label="成本中心">
+					<el-select
+						v-model="reportForm.costCenterValue"
+						filterable
+						placeholder="请选择"
+					>
+						<el-option
+							v-for="item in reportForm.costCenter"
+							:key="item.value"
+							:label="item.label"
+							:value="item.value"
+						>
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="月份">
+					<el-date-picker
+						v-model="reportForm.dateValue"
+						type="month"
+						value-format="yyyy-MM"
+						placeholder="选择月"
+					>
+					</el-date-picker>
+				</el-form-item>
+			</el-form>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="dialogVisible = false">取 消</el-button>
 				<el-button type="primary" @click="startDownload"
@@ -140,6 +158,7 @@
 				>
 			</span>
 		</el-dialog>
+		<div style="margin-top: 20px; color: red">{{ msg }}</div>
 	</div>
 </template>
 
@@ -153,16 +172,31 @@ export default {
 			msg: "",
 			errorMsg: "",
 			dialogVisible: false,
-			dateValue: "",
 			uploadUrl: "",
 			fileArr: [],
 			dialog: false,
 			loaded: 0,
 			total: 0,
 			progress: 0,
+			reportForm: {
+				dateValue: "",
+				costCenterValue: "",
+				costCenter: [
+					{ value: "1", label: "示例数据1" },
+					{ value: "2", label: "示例数据2" },
+				],
+			},
 		};
 	},
+	mounted: function () {
+		// this.getCostCenter();
+	},
 	methods: {
+		downLoadReport() {
+			this.dialogVisible = true;
+			//获取成本中心
+			console.log("获取成本中心");
+		},
 		// submitupload() {
 		// 	this.$refs.upload.submit();
 		// },
@@ -183,8 +217,10 @@ export default {
 		// exceed() {
 		// 	this.errorMsg = "超出文件上传个数";
 		// },
-		handleClose() {
-			console.log("yes");
+		handleClose(done) {
+			this.reportForm.dateValue = "";
+			this.reportForm.costCenterValue = "";
+			done();
 		},
 		startDownload() {
 			this.dialogVisible = false;
