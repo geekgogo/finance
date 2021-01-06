@@ -62,7 +62,10 @@
 				>
 			</span>
 		</el-dialog>
-		<div style="margin-top: 20px; color: red; white-space: pre-wrap">
+		<div style="margin-top: 20px; color: green; white-space: pre-wrap">
+			{{ successMsg }}
+		</div>
+		<div style="color: red; white-space: pre-wrap">
 			{{ msg }}
 		</div>
 	</div>
@@ -75,6 +78,7 @@ export default {
 		return {
 			fileList: [],
 			limit: 10,
+			successMsg: "",
 			msg: "",
 			errorMsg: "",
 			dialogVisible: false,
@@ -149,6 +153,7 @@ export default {
 		},
 		submit() {
 			this.msg = "";
+			this.successMsg = "";
 			const files = this.$refs.upload.uploadFiles;
 			//检测文件名
 			//checkFileName(files)
@@ -177,11 +182,10 @@ export default {
 				})
 					.then((res) => {
 						this.loading.close();
+						console.log(res);
 						if (res.data.code == "0") {
-							this.$message.success("上传成功");
-						} else {
-							this.$message.error("上传失败");
-							this.msg = res.data.msg;
+							this.successMsg = res.data.success_msg;
+							this.msg = res.data.error_msg;
 						}
 						this.$refs.upload.clearFiles();
 						// this.dialog = false;
