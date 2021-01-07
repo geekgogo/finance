@@ -94,6 +94,7 @@ export default {
 				costCenter: [],
 			},
 			loading: "",
+			loading2: "",
 		};
 	},
 	mounted: function () {
@@ -108,14 +109,7 @@ export default {
 				method: "GET",
 			})
 				.then((res) => {
-					var costCenterObj;
-					for (var i = 0; i < res.data.length; i++) {
-						costCenterObj = {
-							value: res.data[i],
-							label: res.data[i],
-						};
-						this.reportForm.costCenter.push(costCenterObj);
-					}
+					this.reportForm.costCenter = res.data;
 				})
 				.catch((_) => {
 					console.log(_);
@@ -139,11 +133,22 @@ export default {
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded",
 				},
+				onUploadProgress: (pe) => {
+					this.loading2 = this.$loading({
+						lock: true,
+						text: "正在生成报表，请稍后...",
+						spinner: "el-icon-loading",
+						background: "rgba(0, 0, 0, 0.7)",
+					});
+				},
 			})
 				.then((res) => {
-					console.log("1313123", res);
-					if (res.data.code == 0) {
-						window.location.href = "/api/do";
+					if (res.data.code == 1) {
+						this.loading2.close();
+						this.$message.error(res.data.msg);
+					} else if (res.data.code == 0) {
+						this.loading2.close();
+						window.location.href = "/api/" + res.data.filepath;
 					}
 				})
 				.catch((_) => {
