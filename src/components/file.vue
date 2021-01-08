@@ -34,7 +34,8 @@
 					<el-select
 						v-model="reportForm.costCenterValue"
 						filterable
-						placeholder="请选择"
+						placeholder="请选择(可多选)"
+						multiple
 					>
 						<el-option
 							v-for="item in reportForm.costCenter"
@@ -121,14 +122,30 @@ export default {
 			done();
 		},
 		startDownload() {
+			console.log();
 			this.dialogVisible = false;
+			var labelArray = [];
+			//获取lable的值
+			for (var i = 0; i < this.reportForm.costCenterValue.length; i++) {
+				let obj = {};
+				obj = this.reportForm.costCenter.find((item) => {
+					return item.value === this.reportForm.costCenterValue[i];
+				});
+				labelArray.push(obj.label);
+			}
+
 			var datas = new Object();
 			datas.costCenter = this.reportForm.costCenterValue;
 			datas.date = this.reportForm.dateValue;
+			datas.costCenterName = labelArray;
+			var postData = this.$qs.stringify(datas, {
+				arrayFormat: "repeat",
+			});
+			console.log(postData);
 			this.$axios({
 				url: "/api/download",
 				method: "POST",
-				data: this.$qs.stringify(datas),
+				data: postData,
 				responseType: "json",
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded",
@@ -152,7 +169,7 @@ export default {
 					}
 				})
 				.catch((_) => {
-					console.log(_);
+					this.loading2.close();
 					console.log("下载失败");
 				});
 		},
