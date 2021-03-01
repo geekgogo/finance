@@ -1,5 +1,5 @@
 <template>
-	<div>
+		<div style="margin-top:60px;">
 		<el-upload ref="upload" drag action="" :auto-upload="false" multiple>
 			<i class="el-icon-upload"></i>
 			<div class="el-upload__text">
@@ -229,4 +229,5 @@ export default {
 </script>
 
 <style>
+
 </style>
